@@ -1,11 +1,17 @@
 import React from "react";
 import "./datatable.css";
+import ReactDOM from "react-dom";
 
 class DataTable extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { headers: props.headers, data: props.data };
+    this.state = {
+      headers: props.headers,
+      data: props.data,
+      sortby: null,
+      descending: null,
+    };
     this.keyField = props.keyField || "id";
     this.noData = props.noData || "No Record Found !";
     this.width = props.width || "100%";
@@ -30,7 +36,9 @@ class DataTable extends React.Component {
           style={{ width: width }}
           data-col={cleanTitle}
         >
-          {title}
+          <span data-col={cleanTitle} className="header-cell">
+            {title}
+          </span>
         </th>
       );
     });
@@ -77,6 +85,14 @@ class DataTable extends React.Component {
     return conentView;
   };
 
+  onSort = (e) => {
+    debugger;
+    console.log(e.target);
+    let data = this.state.data.slice(); // create duplicate array from original array
+    let colIndex = ReactDOM.findDOMNode(e.target).parentNode.cellIndex;
+    console.log(colIndex);
+  };
+
   renderTable = () => {
     let title = this.props.title || "Data-Table";
     let headerView = this.renderTableHeader();
@@ -86,7 +102,7 @@ class DataTable extends React.Component {
     return (
       <table className="data-inner-table">
         <caption className="data-table-caption">{title}</caption>
-        <thead>
+        <thead onClick={this.onSort}>
           <tr>{headerView}</tr>
         </thead>
         <tbody>{contentView}</tbody>
