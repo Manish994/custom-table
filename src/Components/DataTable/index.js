@@ -17,6 +17,30 @@ class DataTable extends React.Component {
     this.width = props.width || "100%";
   }
 
+  onDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  onDragStart = (e, sourceIdxValue) => {
+    e.dataTransfer.setData("text/plain", sourceIdxValue);
+  };
+
+  onDrop = (e, targetIdxValue) => {
+    e.preventDefault();
+    let source = e.dataTransfer.getData("text/plain");
+    let headers = [...this.state.headers];
+    let srcHeader = headers[source];
+    let targetHeader = headers[targetIdxValue];
+
+    let temp = srcHeader.index;
+    srcHeader.index = targetHeader.index;
+    targetHeader.index = temp;
+
+    this.setState({
+      headers,
+    });
+  };
+
   renderTableHeader = () => {
     let { headers } = this.state;
     headers.sort((a, b) => {
@@ -39,8 +63,11 @@ class DataTable extends React.Component {
           ref={(th) => (this.th = th)}
           style={{ width: width }}
           data-col={cleanTitle}
+          onDragStart={(e) => this.onDragStart(e, index)}
+          onDragOver={this.onDragOver}
+          onDrop={(e) => this.onDrop(e, index)}
         >
-          <span data-col={cleanTitle} className="header-cell">
+          <span draggable data-col={cleanTitle} className="header-cell">
             {title}
           </span>
         </th>
