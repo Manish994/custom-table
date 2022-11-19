@@ -1,5 +1,7 @@
 import "./App.css";
 import React, { Component } from "react";
+import DataTable from "./Components/DataTable";
+import "./Components/DataTable/datatable.css";
 
 class App extends Component {
   constructor(props) {
@@ -85,7 +87,24 @@ class App extends Component {
     this.state = model;
   }
   render() {
-    return <div className="App"></div>;
+    return (
+      <div className="App">
+        <DataTable
+          clasName="data-table"
+          title="User Profiles"
+          keyField="id"
+          pagination={{
+            enabled: true,
+            pageLength: 5,
+            type: "long",
+          }}
+          width="100%"
+          headers={this.state.headers}
+          data={this.state.data}
+          noData="No Records Found !"
+        ></DataTable>
+      </div>
+    );
   }
 }
 export default App;
