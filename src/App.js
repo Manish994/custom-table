@@ -1,5 +1,5 @@
-import "./App.css";
 import React, { Component } from "react";
+import "./App.css";
 import DataTable from "./Components/DataTable";
 import "./Components/DataTable/datatable.css";
 
@@ -90,7 +90,7 @@ class App extends Component {
     return (
       <div className="App">
         <DataTable
-          clasName="data-table"
+          className="data-table"
           title="User Profiles"
           keyField="id"
           pagination={{
