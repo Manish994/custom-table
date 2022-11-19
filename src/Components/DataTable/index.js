@@ -29,6 +29,10 @@ class DataTable extends React.Component {
       let cleanTitle = header.accessor;
       let width = header.width;
 
+      if (this.state.sortby === index) {
+        title += this.state.descending ? "\u2193" : "\u2191";
+      }
+
       return (
         <th
           key={cleanTitle}
@@ -86,11 +90,31 @@ class DataTable extends React.Component {
   };
 
   onSort = (e) => {
-    debugger;
-    console.log(e.target);
     let data = this.state.data.slice(); // create duplicate array from original array
     let colIndex = ReactDOM.findDOMNode(e.target).parentNode.cellIndex;
-    console.log(colIndex);
+    let colTitle = e.target.dataset.col;
+
+    let descending = !this.state.descending;
+
+    data.sort((a, b) => {
+      let sortVal = 0;
+      if (a[colTitle] < b[colTitle]) {
+        sortVal = -1; //0 vanda sano value aauchha ?
+      } else if (a[colTitle] > b[colTitle]) {
+        sortVal = 1; // 0 vanda thulo value aaucha ?
+      }
+      if (descending) {
+        sortVal = sortVal * -1;
+      }
+
+      return sortVal;
+    });
+
+    this.setState({
+      data,
+      sortby: colIndex,
+      descending,
+    });
   };
 
   renderTable = () => {
