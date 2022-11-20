@@ -16,7 +16,7 @@ class DataTable extends React.Component {
       descending: null,
       search: false,
       pageLength: this.props.pagination.pageLength || 5,
-      currentPage: 1,
+      currentPage: 6,
     };
     this.keyField = props.keyField || "id";
     this.noData = props.noData || "No Record Found !";
@@ -280,6 +280,10 @@ class DataTable extends React.Component {
     alert(pageLength);
   };
 
+  onGotoPage = (pageNo) => {
+    alert(pageNo);
+  };
+
   render() {
     return (
       <div className={this.props.className}>
@@ -289,6 +293,8 @@ class DataTable extends React.Component {
             totalRecords={this.state.data.length}
             pageLength={this.state.pageLength}
             onPageLengthChange={this.onPageLengthChange}
+            currentPage={this.state.currentPage}
+            onGotoPage={this.onGotoPage}
           />
         )}
         {this.renderToolbar()}

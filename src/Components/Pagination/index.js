@@ -3,13 +3,32 @@ import React, { Fragment } from "react";
 class Pagination extends React.Component {
   constructor(props) {
     super(props);
-    this.currentPage = 1;
-    this.pageLength = this.props.pageLength;
+    this.state = {
+      currentPage: this.props.currentPage || 1,
+    };
   }
 
   onPageLengthChange = (e) => {
     //pass value from onPageLengthChange function to parent Component
     this.props.onPageLengthChange(this.pageLenthInput.value);
+  };
+
+  onPrevPage = (e) => {
+    if (this.state.currentPage === 1) return;
+    this.onGotoPage(this.state.currentPage - 1);
+  };
+
+  onGotoPage = (pageNo) => {
+    if (pageNo === this.state.currentPage) return;
+    if (this.currentPageInput) {
+      this.currentPageInput.value = pageNo;
+    }
+
+    this.setState({
+      currentPage: pageNo,
+    });
+
+    this.props.onGotoPage(pageNo);
   };
   render() {
     let PageSelector = (
@@ -29,10 +48,20 @@ class Pagination extends React.Component {
         </span>
       </Fragment>
     );
+
+    let prevButton = (
+      <button
+        key="prev"
+        className="pagination-btn-prev"
+        onClick={this.onPrevPage}
+      >
+        {"<"}
+      </button>
+    );
     return (
       <div className="pagination">
         {/* Render Array Of Component */}
-        {[PageSelector]}
+        {[PageSelector, prevButton]}
       </div>
     );
   }
