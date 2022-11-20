@@ -3,6 +3,8 @@ import "./datatable.css";
 import ReactDOM from "react-dom";
 
 class DataTable extends React.Component {
+  _preSearchData = null;
+
   constructor(props) {
     super(props);
 
@@ -11,6 +13,7 @@ class DataTable extends React.Component {
       data: props.data,
       sortby: null,
       descending: null,
+      search: false,
     };
     this.keyField = props.keyField || "id";
     this.noData = props.noData || "No Record Found !";
@@ -60,7 +63,7 @@ class DataTable extends React.Component {
       return (
         <th
           key={cleanTitle}
-          ref={(th) => (this.th = th)}
+          ref={(th) => (this[cleanTitle] = th)} //this.id, this.name, this.profile, this.qualification, this.rating
           style={{ width: width }}
           data-col={cleanTitle}
           onDragStart={(e) => this.onDragStart(e, index)}
@@ -144,6 +147,58 @@ class DataTable extends React.Component {
     });
   };
 
+  onSearch = (e) => {
+    //Grab the search text
+    let neddle = e.target.value.trim().toLowerCase();
+
+    //Empty input Box
+    if (!neddle) {
+      this.setState({
+        data: this._preSearchData,
+      });
+    }
+
+    // Grab the index of the target column
+    let idx = e.target.dataset.idx;
+
+    // Get the target column name
+    let targetCol = this.state.headers[idx].accessor;
+
+    // Filter the records
+    let searchData = this._preSearchData.filter((row) => {
+      return row[targetCol].toString().toLowerCase().indexOf(neddle) > -1;
+    });
+
+    // Update the state
+    this.setState({
+      data: searchData,
+    });
+  };
+
+  renderSearch = () => {
+    let { search, headers } = this.state;
+    if (!search) {
+      return null;
+    }
+
+    let searchInputs = headers.map((header, headerIdx) => {
+      //Get the header ref (renderTableHeader = th=> th[clientTitle] = th)
+      let hdr = this[header.accessor];
+
+      return (
+        <td key={headerIdx}>
+          <input
+            type="text"
+            data-idx={headerIdx}
+            style={{ width: hdr.clientWidth - 23 + "px" }}
+          />
+        </td>
+      );
+    });
+
+    return <tr onChange={this.onSearch}>{searchInputs}</tr>;
+  };
+
   renderTable = () => {
     let title = this.props.title || "Data-Table";
     let headerView = this.renderTableHeader();
@@ -156,13 +211,44 @@ class DataTable extends React.Component {
         <thead onClick={this.onSort}>
           <tr>{headerView}</tr>
         </thead>
-        <tbody>{contentView}</tbody>
+        <tbody>
+          {this.renderSearch()}
+          {contentView}
+        </tbody>
       </table>
     );
   };
 
+  onToggleSearch = (e) => {
+    if (this.state.search) {
+      this.setState({
+        data: this._preSearchData,
+        search: false,
+      });
+      this._preSearchData = null;
+    } else {
+      this._preSearchData = this.state.data;
+      this.setState({
+        search: true,
+      });
+    }
+  };
+
+  renderToolbar = () => {
+    return (
+      <div className="toolbar">
+        <button onClick={this.onToggleSearch}>Search</button>
+      </div>
+    );
+  };
+
   render() {
-    return <div className={this.props.className}>{this.renderTable()}</div>;
+    return (
+      <div className={this.props.className}>
+        {this.renderToolbar()}
+        {this.renderTable()}
+      </div>
+    );
   }
 }
 

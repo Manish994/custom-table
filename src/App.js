@@ -88,7 +88,7 @@ class App extends Component {
   }
   render() {
     return (
-      <div className="App">
+      <div>
         <DataTable
           className="data-table"
           title="User Profiles"
