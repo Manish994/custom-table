@@ -149,14 +149,17 @@ class DataTable extends React.Component {
 
   onSearch = (e) => {
     //Grab the search text
-    let neddle = e.target.value.trim().toLowerCase();
+    // let neddle = e.target.value.trim().toLowerCase();
 
     //Empty input Box
-    if (!neddle) {
-      this.setState({
-        data: this._preSearchData,
-      });
-    }
+    // if (!neddle) {
+    //   this.setState({
+    //     data: this._preSearchData,
+    //   });
+    // }
+
+    let { headers } = this.state;
+    let data = this._preSearchData;
 
     // Grab the index of the target column
     let idx = e.target.dataset.idx;
@@ -166,8 +169,30 @@ class DataTable extends React.Component {
 
     // Filter the records
     let searchData = this._preSearchData.filter((row) => {
-      return row[targetCol].toString().toLowerCase().indexOf(neddle) > -1;
+      debugger;
+      let show = true;
+
+      for (let field in row) {
+        let fieldValue = row[field];
+        let inputId = "inp" + field;
+        let input = this[inputId];
+        if (!fieldValue === "") {
+          show = true;
+        } else {
+          show =
+            fieldValue
+              .toString()
+              .toLowerCase()
+              .indexOf(input.value.toLowerCase()) > -1;
+
+          if (!show) break;
+        }
+      }
+      return show;
     });
+    // let searchData = this._preSearchData.filter((row) => {
+    //   return row[targetCol].toString().toLowerCase().indexOf(neddle) > -1;
+    // });
 
     // Update the state
     this.setState({
@@ -185,10 +210,13 @@ class DataTable extends React.Component {
       //Get the header ref (renderTableHeader = th=> th[clientTitle] = th)
       let hdr = this[header.accessor];
 
+      let inputId = "inp" + header.accessor;
+
       return (
         <td key={headerIdx}>
           <input
             type="text"
+            ref={(input) => (this[inputId] = input)}
             data-idx={headerIdx}
             style={{ width: hdr.clientWidth - 23 + "px" }}
           />
