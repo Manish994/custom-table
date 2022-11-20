@@ -1,6 +1,7 @@
 import React from "react";
 import "./datatable.css";
 import ReactDOM from "react-dom";
+import Pagination from "../Pagination";
 
 class DataTable extends React.Component {
   _preSearchData = null;
@@ -14,10 +15,15 @@ class DataTable extends React.Component {
       sortby: null,
       descending: null,
       search: false,
+      pageLength: this.props.pagination.pageLength || 5,
+      currentPage: 1,
     };
     this.keyField = props.keyField || "id";
     this.noData = props.noData || "No Record Found !";
     this.width = props.width || "100%";
+
+    //Add Pagination Support
+    this.pagination = this.props.pagination;
   }
 
   onDragOver = (e) => {
@@ -169,13 +175,13 @@ class DataTable extends React.Component {
 
     // Filter the records
     let searchData = this._preSearchData.filter((row) => {
-      debugger;
       let show = true;
 
       for (let field in row) {
         let fieldValue = row[field];
         let inputId = "inp" + field;
         let input = this[inputId];
+        // id,name,profile,age is empty then show = true;
         if (!fieldValue === "") {
           show = true;
         } else {
@@ -183,7 +189,7 @@ class DataTable extends React.Component {
             fieldValue
               .toString()
               .toLowerCase()
-              .indexOf(input.value.toLowerCase()) > -1;
+              .indexOf(input.value.toString().toLowerCase()) > -1;
 
           if (!show) break;
         }
@@ -270,9 +276,21 @@ class DataTable extends React.Component {
     );
   };
 
+  onPageLengthChange = (pageLength) => {
+    alert(pageLength);
+  };
+
   render() {
     return (
       <div className={this.props.className}>
+        {this.pagination.enabled && (
+          <Pagination
+            type={this.props.pagination.type}
+            totalRecords={this.state.data.length}
+            pageLength={this.state.pageLength}
+            onPageLengthChange={this.onPageLengthChange}
+          />
+        )}
         {this.renderToolbar()}
         {this.renderTable()}
       </div>
