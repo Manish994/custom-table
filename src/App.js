@@ -14,7 +14,7 @@ class App extends Component {
           title: "Profile",
           accessor: "profile",
           index: 1,
-          width: 80,
+          width: "80px",
           cell: { type: "image", style: { width: "50px" } },
         },
         { title: "Name", accessor: "name", index: 2 },
@@ -24,7 +24,7 @@ class App extends Component {
           title: "Rating",
           accessor: "rating",
           index: 5,
-          width: 200,
+          width: "200px",
           cell: (row) => (
             <div className="rating">
               <div
