@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import "../Pagination/pagination.css";
 
 class Pagination extends React.Component {
   constructor(props) {
@@ -30,7 +31,42 @@ class Pagination extends React.Component {
 
     this.props.onGotoPage(pageNo);
   };
+
+  _getPaginationButtons = (text) => {
+    let classNames = "pagination-btn";
+
+    if (this.state.currentPage === text) {
+      classNames += " current-page ";
+    }
+
+    let html = (
+      <button
+        key={`btn-${text}`}
+        id={`btn-${text}`}
+        className={classNames}
+        onClick={(e) => {
+          this.onGotoPage(text);
+        }}
+      >
+        {text}
+      </button>
+    );
+    return html;
+  };
+
+  onNextPage = (e) => {
+    //yedi pages vand dherai vayo vane return
+    if (this.state.currentPage > this.pages - 1) return;
+
+    this.onGotoPage(this.state.currentPage + 1);
+  };
+
   render() {
+    //Get total display page
+    let totalRecords = this.props.totalRecords;
+    let pages = Math.ceil(totalRecords / this.props.pageLength);
+    this.pages = pages;
+
     let PageSelector = (
       <Fragment key="page-fragment">
         <span key="page-selector" className="page-selector">
@@ -58,10 +94,28 @@ class Pagination extends React.Component {
         {"<"}
       </button>
     );
+
+    let nextButton = (
+      <button
+        key="next"
+        className="pagination-btn-next"
+        onClick={this.onNextPage}
+      >
+        {">"}
+      </button>
+    );
+
+    let buttons = [];
+    if (this.props.type === "long") {
+      for (let i = 1; i <= pages; i++) {
+        buttons.push(this._getPaginationButtons(i));
+      }
+    } else if (this.props.type === "short") {
+    }
     return (
       <div className="pagination">
         {/* Render Array Of Component */}
-        {[PageSelector, prevButton]}
+        {[PageSelector, prevButton, buttons, nextButton]}
       </div>
     );
   }

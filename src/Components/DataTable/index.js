@@ -16,7 +16,7 @@ class DataTable extends React.Component {
       descending: null,
       search: false,
       pageLength: this.props.pagination.pageLength || 5,
-      currentPage: 6,
+      currentPage: 2,
     };
     this.keyField = props.keyField || "id";
     this.noData = props.noData || "No Record Found !";
