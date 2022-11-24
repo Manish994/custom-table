@@ -203,9 +203,18 @@ class DataTable extends React.Component {
     // });
 
     // Update the state
-    this.setState({
-      data: searchData,
-    });
+    this.setState(
+      {
+        data: searchData,
+        pagedData: searchData,
+        totalRecords: searchData,
+      },
+      () => {
+        if (this.pagination.enabled) {
+          this.onGotoPage(1);
+        }
+      }
+    );
   };
 
   renderSearch = () => {

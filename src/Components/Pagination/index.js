@@ -73,6 +73,14 @@ class Pagination extends React.Component {
     this.props.onGotoPage(this.currentPageInput.value);
   };
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.currentPage !== prevState.currentPage) {
+      return {
+        currentPage: nextProps.currentPage,
+      };
+    }
+  }
+
   render() {
     //Get total display page
     let totalRecords = this.props.totalRecords;
