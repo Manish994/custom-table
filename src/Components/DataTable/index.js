@@ -12,11 +12,12 @@ class DataTable extends React.Component {
     this.state = {
       headers: props.headers,
       data: props.data,
+      pagedData: props.data,
       sortby: null,
       descending: null,
       search: false,
       pageLength: this.props.pagination.pageLength || 5,
-      currentPage: 2,
+      currentPage: 3,
     };
     this.keyField = props.keyField || "id";
     this.noData = props.noData || "No Record Found !";
@@ -94,7 +95,8 @@ class DataTable extends React.Component {
   };
 
   renderContent = () => {
-    let { headers, data } = this.state;
+    let { headers } = this.state;
+    let data = this.pagination ? this.state.pagedData : this.state.data;
     let conentView = data.map((row, rowIdx) => {
       let id = row[this.keyField];
 
@@ -276,13 +278,41 @@ class DataTable extends React.Component {
     );
   };
 
+  getPagedData = (pageNo, pageLength) => {
+    let startOfRecord = (pageNo - 1) * pageLength;
+    let endOfRecord = startOfRecord + pageLength;
+
+    let data = this.state.data;
+    let pagedData = data.slice(startOfRecord, endOfRecord);
+
+    return pagedData;
+  };
+
   onPageLengthChange = (pageLength) => {
-    alert(pageLength);
+    //when state hook is update than callback function is executed
+    this.setState(
+      {
+        pageLength: parseInt(pageLength, 10),
+      },
+      () => {
+        this.onGotoPage(this.state.currentPage);
+      }
+    );
   };
 
   onGotoPage = (pageNo) => {
-    alert(pageNo);
+    let pagedData = this.getPagedData(pageNo, this.state.pageLength);
+    this.setState({
+      pagedData: pagedData,
+      currentPage: pageNo,
+    });
   };
+
+  componentDidMount() {
+    if (this.pagination.enabled) {
+      this.onGotoPage(this.state.currentPage);
+    }
+  }
 
   render() {
     return (
