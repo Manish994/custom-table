@@ -96,7 +96,7 @@ class App extends Component {
           pagination={{
             enabled: true,
             pageLength: 5,
-            type: "long",
+            type: "short",
           }}
           width="100%"
           headers={this.state.headers}

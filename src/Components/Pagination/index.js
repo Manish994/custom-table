@@ -111,6 +111,19 @@ class Pagination extends React.Component {
         buttons.push(this._getPaginationButtons(i));
       }
     } else if (this.props.type === "short") {
+      buttons.push(
+        <input
+          type="number"
+          className="current-page-input"
+          key="currentPageInput"
+          max={this.pages}
+          defaultValue={this.state.currentPage}
+          ref={(input) => {
+            this.currentPageInput = input;
+          }}
+          onChange={this.onCurrentPageChange}
+        ></input>
+      );
     }
     return (
       <div className="pagination">
