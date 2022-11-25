@@ -148,11 +148,16 @@ class DataTable extends React.Component {
       return sortVal;
     });
 
-    this.setState({
-      data,
-      sortby: colIndex,
-      descending,
-    });
+    this.setState(
+      {
+        data,
+        sortby: colIndex,
+        descending,
+      },
+      () => {
+        this.onGotoPage(this.state.currentPage);
+      }
+    );
   };
 
   onSearch = (e) => {
